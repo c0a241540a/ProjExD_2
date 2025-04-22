@@ -1,5 +1,6 @@
 import os
 import random
+import time
 import sys
 import pygame as pg
 
@@ -14,8 +15,17 @@ DELTA = {
 }
 
 
-
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+def gameover(screen: pg.Surface) -> None:
+    kn_img = pg.image.load("fig/8.png")
+    kn_rct = kn_img.get_rect()
+    kn_rct.center = 300, 200
+    screen = pg.display.set_mode((WIDTH, HEIGHT))
+    bp = pg.Surface((20, 20))
+    bp.set_alpha(100)
+    pg.draw.Rect(bp,(0, 0, 0), (0,0,WIDTH, HEIGHT))
+    return screen.blit(bp,[0,0]),screen.blit(kn_img, kn_rct)
 
 
 def check_bound(rct: pg.Rect) -> tuple[bool,bool]:
@@ -42,6 +52,15 @@ def main():
     bb_rct.centery = random.randint(0,HEIGHT)
     bb_img.set_colorkey((0, 0, 0))
     vx,vy = +5,+5
+    """
+    bb_accs = [a for a in range(1, 11)]
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+
+    avx = vx*bb_accs[min(tmr//500, 9)]
+    bb_img = bb_img[min(tmr//500, 9)]
+    """
 
     clock = pg.time.Clock()
     tmr = 0
@@ -52,7 +71,8 @@ def main():
         screen.blit(bg_img, [0, 0]) 
         
         if kk_rct.colliderect(bb_rct):
-            print("ゲームオーバー！！")
+            gameover(screen)
+            time.sleep(5)
             return
 
         key_lst = pg.key.get_pressed()
@@ -75,6 +95,8 @@ def main():
         if not tate:
             vy *= -1
         screen.blit(bb_img, bb_rct)
+
+
         pg.display.update()
         tmr += 1
         clock.tick(50)
