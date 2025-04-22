@@ -14,20 +14,23 @@ DELTA = {
 
 }
 
-
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def gameover(screen: pg.Surface) -> None:
     kn_img = pg.image.load("fig/8.png")
     kn_rct = kn_img.get_rect()
-    kn_rct.center = 300, 200
-    screen = pg.display.set_mode((WIDTH, HEIGHT))
-    bp = pg.Surface((20, 20))
-    bp.set_alpha(100)
-    pg.draw.Rect(bp,(0, 0, 0), (0,0,WIDTH, HEIGHT))
-    return screen.blit(bp,[0,0]),screen.blit(kn_img, kn_rct)
-
-
+    kn_rct.center = 300, 325
+    fonto = pg.font.Font(None, 80)
+    txt = fonto.render("Game Over",True, (255, 255, 255))
+    bp = pg.Surface((WIDTH, HEIGHT))
+    pg.draw.rect(bp,(0, 0, 0), (0,0,WIDTH, HEIGHT))
+    bp.set_alpha(170)
+    screen.blit(bp,[0,0])
+    screen.blit(kn_img,kn_rct)
+    kn_rct.center = 800, 325
+    screen.blit(kn_img,kn_rct)
+    screen.blit(txt, [400, 300])
+    pg.display.update()
 def check_bound(rct: pg.Rect) -> tuple[bool,bool]:
     yoko,tate = True,True
     if rct.left < 0 or WIDTH < rct.right:
@@ -52,15 +55,6 @@ def main():
     bb_rct.centery = random.randint(0,HEIGHT)
     bb_img.set_colorkey((0, 0, 0))
     vx,vy = +5,+5
-    """
-    bb_accs = [a for a in range(1, 11)]
-    for r in range(1, 11):
-        bb_img = pg.Surface((20*r, 20*r))
-        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
-
-    avx = vx*bb_accs[min(tmr//500, 9)]
-    bb_img = bb_img[min(tmr//500, 9)]
-    """
 
     clock = pg.time.Clock()
     tmr = 0
@@ -100,7 +94,6 @@ def main():
         pg.display.update()
         tmr += 1
         clock.tick(50)
-
 
 if __name__ == "__main__":
     pg.init()
